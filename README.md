@@ -1,2 +1,2 @@
-# VisualAidForVisuallyImpaired-G55-PS24
-Repo for Visual Aid for visually impaired
+
+https://drive.google.com/file/d/1-Cfpkmn4zORsfKNAVIFs7ZcyyYhihYgq/view?usp=sharing

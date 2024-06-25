@@ -3,19 +3,19 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 import requests
 import base64
-from io import BytesIO
+import bcrypt
 
 app = Flask(__name__)
 CORS(app)
-app.config["MONGO_URI"] = "mongodb+srv://abhinavsai:dbabhi@cluster0.ld98sx9.mongodb.net/VisualAid"
+app.config["MONGO_URI"] = "mongodb+srv://mightguy72000:Mightguy%40123@cluster0.p7ukxu5.mongodb.net/Visual_Aid"
 mongo = PyMongo(app)
 
 API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
 HEADERS = {"Authorization": "Bearer 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"}
 
-
 def query_model(image_data):
     response = requests.post(API_URL, headers=HEADERS, data=image_data)
+    response.raise_for_status()  # Raise an error on bad response
     return response.json()
 
 @app.route('/')
@@ -25,98 +25,76 @@ def home():
 @app.route('/caption', methods=['POST'])
 def get_image_caption():
     try:
-        # Check if the request contains an image file
         if 'image' not in request.files:
             return jsonify({'error': 'No image file provided. Make sure to include an image file in the request.'}), 400
 
-        # Read the image file from the request
         image_file = request.files['image']
-        image_file.seek(0)  # Ensure the file pointer is at the start
+        image_file.seek(0)
 
-        # Check if the image file is empty
         image_content = image_file.read()
         if not image_content:
             return jsonify({'error': 'The provided image file is empty.'}), 400
 
-        print("Image content length:", len(image_content))
-
-        # Convert the image to base64
         image_base64 = base64.b64encode(image_content).decode('utf-8')
-        print("Base64 encoded image:", image_base64[:100])  # Print first 100 characters for brevity
-
-        # Query the model for image caption
         result = query_model(image_content)
         caption = result[0]["generated_text"]
-        print("Generated caption:", caption)
 
-        # Insert the data into MongoDB
-        try:
-            mongo.db.Assets.insert_one({"image_file": image_base64, "caption": caption})
-            print("Inserted into database")
-        except Exception as e:
-            print(f"Error while uploading the conversation to the database: {e}")
+        mongo.db.conversation.insert_one({"image_file": image_base64, "caption": caption})
+        return jsonify({"caption": caption})
 
-        return jsonify(result[0]["generated_text"])
-
+    except requests.RequestException as req_err:
+        return jsonify({'error': f'Error querying the model: {str(req_err)}'}), 500
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Error processing request: {str(e)}'}), 500
 
-collection = mongo.db["Assets"]
-
-
-@app.route('/conversations',methods = ['get'])
+@app.route('/conversations', methods=['GET'])
 def send_conversations():
-    print("Received fetch request")
     try:
-        data = list(collection.find({}, {'_id': 0}))  # exclude _id field from the results
-        print(jsonify(data))
-
+        data = list(mongo.db.conversation.find({}, {'_id': 0}))
         return jsonify(data)
     except Exception as e:
-        print("Error while fetching data from database")
+        return jsonify({'error': f'Error fetching data from database: {str(e)}'}), 500
 
+@app.route('/login', methods=['POST'])
+def login_verification():
+    try:
+        data = request.get_json()
+        username = data.get("username")
+        password = data.get("password")
+        user_data = mongo.db.users.find_one({"username": username}, {'_id': 0})
+
+        if not user_data:
+            return jsonify({'error': 'User not found'}), 404
+
+        if bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
+            return jsonify({"message": "Login successful"}), 200
+        else:
+            return jsonify({"error": "Invalid username or password"}), 401
+
+    except Exception as e:
+        return jsonify({'error': f'Error during login: {str(e)}'}), 500
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    try:
+        data = request.get_json()
+        username = data.get("username")
+        password = data.get("password")
+
+        if not username or not password:
+            return jsonify({"error": "Username and password are required"}), 400
+
+        if mongo.db.users.find_one({"username": username}):
+            return jsonify({"error": "Username already exists"}), 400
+
+            # Hash the password
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        mongo.db.users.insert_one({"username": username, "password": hashed_password})
+        return jsonify({"message": "New user created"}), 201
+
+    except Exception as e:
+        return jsonify({"error": f"Error while creating a user: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
-
-
-
-
-
-# from flask import Flask, request, jsonify
-# import requests
-
-# app = Flask(__name__)
-
-# API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
-# HEADERS = {"Authorization": "Bearer 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"}
-
-# def query_model(image_data):
-#     response = requests.post(API_URL, headers=HEADERS, data=image_data)
-#     return response.json()
-
-# @app.route('/caption', methods=['POST'])
-# def get_image_caption():
-#     try:
-#         # Check if the request contains an image file
-#         if 'image' not in request.files:
-#             return jsonify({'error': 'No image file provided. Make sure to include an image file in the request.'}), 400
-
-#         # Read the image file from the request
-#         image_file = request.files['image']
-#         print("Image : ",image_file)
-
-#         print("Content Type:", image_file.content_type)
-
-#         # Query the model for image caption
-#         result = query_model(image_file)
-#         print(result)
-#         return jsonify(result[0]["generated_text"])
-
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
-    
+    app.run(host='0.0.0.0' , debug=True)

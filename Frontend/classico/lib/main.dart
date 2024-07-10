@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:convert';
-import 'package:video_player/video_player.dart';
+
+const String url = "http://192.168.1.2:5000/";
 
 void main() {
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -22,136 +24,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-// class SignUp extends StatefulWidget {
-//   @override
-//   State<SignUp> createState() => _SignUpState();
-// }
-//
-// class _SignUpState extends State<SignUp> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("SignUp"),
-//       ),
-//       body: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text("SignUP",style: TextStyle(fontSize: 35,fontWeight: FontWeight.bold,),),
-//           SizedBox(height: 20,),
-//           Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 10),
-//             child: TextFormField(
-//               keyboardType: TextInputType.text,
-//               decoration: InputDecoration(
-//                 labelText: "mobile",
-//                 hintText: "enter your mobile number",
-//                 border: OutlineInputBorder(),
-//                 prefixIcon: Icon(Icons.verified_user),
-//               ),
-//             ),
-//           ),
-//           SizedBox(height: 20,),
-//           Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 10),
-//             child: TextFormField(
-//               keyboardType: TextInputType.visiblePassword,
-//               decoration: InputDecoration(
-//                 labelText: "mobile",
-//                 hintText: "enter your mobile number",
-//                 border: OutlineInputBorder(),
-//                 prefixIcon: Icon(Icons.password),
-//               ),
-//             ),
-//           ),
-//           SizedBox(height: 20,),
-//           ElevatedButton(
-//               style: ElevatedButton.styleFrom(
-//                 foregroundColor: Colors.white,
-//                 backgroundColor: Colors.blue,
-//                 minimumSize: Size(150, 50),
-//               ),
-//               onPressed: (){},
-//               child: Text("Save",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-//           ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//
-//
-// class LoginScreen extends StatefulWidget {
-//   @override
-//   State<LoginScreen> createState() => _LoginScreenState();
-// }
-//
-// class _LoginScreenState extends State<LoginScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Login Page"),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Text("Login",style: TextStyle(color: Colors.black,fontSize: 35,fontWeight: FontWeight.bold),),
-//             SizedBox(height: 20,),
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 10),
-//               child: TextFormField(
-//                 keyboardType: TextInputType.text,
-//                 decoration: InputDecoration(
-//                   labelText: "mobile",
-//                   hintText: "enter your mobile number",
-//                   prefixIcon: Icon(Icons.verified_user),
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//             ),
-//             SizedBox(height: 20,),
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 10),
-//               child: TextFormField(
-//                 keyboardType: TextInputType.visiblePassword,
-//                 decoration: InputDecoration(
-//                   labelText: "password",
-//                   hintText: "enter your password",
-//                   prefixIcon: Icon(Icons.password),
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//             ),
-//             SizedBox(height: 20,),
-//             ElevatedButton(
-//               style: ElevatedButton.styleFrom(
-//                 foregroundColor: Colors.white,
-//                 backgroundColor: Colors.blue,
-//                 minimumSize: Size(150, 50),
-//               ),
-//               onPressed: (){
-//
-//               },
-//               child: Text("Submit",style: TextStyle(fontSize: 20),),
-//             ),
-//             SizedBox(height: 20,),
-//             InkWell(
-//               onTap: (){
-//                 Navigator.push(context,MaterialPageRoute(builder: (context)=> SignUp()),
-//                 );
-//               },
-//               child: Text("Want to signUP?",style: TextStyle(fontWeight: FontWeight.normal,fontSize: 20,decoration: TextDecoration.underline),),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 
 class VolunteerScreen extends StatelessWidget {
   @override
@@ -226,11 +98,10 @@ class VisualAssistancePage extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: () {
-                _speak("tap on the upper half for image processing");
-                _speak("tap on the below half for video processing");
+                _speak("tap anywhere to capture an image");
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ImageAndVideoProcessing()),
+                  MaterialPageRoute(builder: (context) => ImageUploadScreen()),
                 );
               },
               child: Container(
@@ -290,68 +161,6 @@ class VisualAssistancePage extends StatelessWidget {
     );
   }
 }
-class ImageAndVideoProcessing extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Image And Video processing ",style: TextStyle(fontSize: 20),),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: (){
-                _speak("tap anywhere on the screen to capture an image");
-                Navigator.push(
-                    context,
-                  MaterialPageRoute(builder: (context) => ImageUploadScreen()),
-                );
-              },
-              child: Container(
-                color: Colors.lightBlue,
-                child: Center(
-                  child: Text(
-                    'Image Processor',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: InkWell(
-              onTap: (){
-                _speak("tap anywhere on the screen to capture a video");
-                Navigator.push(
-                    context,
-                  MaterialPageRoute(builder: (context) => VideoProcessingPage()),
-                );
-              },
-              child: Container(
-                color: Colors.white,
-                child: Center(
-                  child: Text(
-                    'Video Processor',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 
 class VolunteerPage extends StatelessWidget {
   @override
@@ -371,16 +180,15 @@ class VolunteerPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => LoadConversations()),
+                    MaterialPageRoute(builder: (context) => LoadConversations()),
                   ); // Navigate back to previous screen
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(300, 50),
                   backgroundColor: Colors.blue.shade600,
                   foregroundColor: Colors.white,
-                  textStyle:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle: TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 child: Text('Images And Captions'),
               ),
@@ -392,7 +200,6 @@ class VolunteerPage extends StatelessWidget {
   }
 }
 
-// -------------------------------
 class LoadConversations extends StatefulWidget {
   @override
   _LoadConversationsState createState() => _LoadConversationsState();
@@ -400,8 +207,7 @@ class LoadConversations extends StatefulWidget {
 
 class _LoadConversationsState extends State<LoadConversations> {
   Future<List<dynamic>> fetchConversations() async {
-    final response =
-        await http.get(Uri.parse('http://192.168.241.215:5000/conversations'));
+    final response = await http.get(Uri.parse(url + 'conversations'));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -432,14 +238,61 @@ class _LoadConversationsState extends State<LoadConversations> {
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final chat = data[index];
+                final id = chat['_id'];
                 final caption = chat['caption'];
+                final response = chat['response'];
                 final imageBase64 = chat['image_file'];
                 final imageBytes = base64Decode(imageBase64);
+                final TextEditingController responseController = TextEditingController();
 
                 return ListTile(
                   contentPadding: EdgeInsets.all(8.0),
                   title: Text(caption ?? 'No Caption'),
-                  subtitle: Image.memory(imageBytes),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.memory(imageBytes),
+                      if (response != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            response,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      if (response == null)
+                        TextField(
+                          controller: responseController,
+                          decoration: InputDecoration(
+                            labelText: 'Enter Response',
+                          ),
+                          onSubmitted: (value) async {
+                            if (value.isNotEmpty) {
+                              final result = await submitResponse(id, value);
+                              if (result) {
+                                setState(() {
+                                  chat['response'] = value;
+                                });
+                              }
+                            }
+                          },
+                        ),
+                      if (response == null)
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await submitResponse(id, responseController.text);
+                            if (result) {
+                              setState(() {
+                                chat['response'] = responseController.text;
+                              });
+                            }
+                          },
+                          child: Text('Submit Response'),
+                        ),
+                    ],
+                  ),
                 );
               },
             );
@@ -448,9 +301,24 @@ class _LoadConversationsState extends State<LoadConversations> {
       ),
     );
   }
-}
 
-// -----------------------------------
+  Future<bool> submitResponse(String id, String response) async {
+    final responseMap = {
+      'id': id,
+      'response': response,
+    };
+
+    final httpResponse = await http.post(
+      Uri.parse(url + 'updateresponse'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(responseMap),
+    );
+
+    return httpResponse.statusCode == 200;
+  }
+}
 
 FlutterTts flutterTts = FlutterTts();
 
@@ -488,10 +356,9 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       return;
     }
 
-    var url =
-        'http://192.168.241.215:5000/caption'; // Update with your server URL
+    var link = url + 'caption'; // Update with your server URL
 
-    var request = http.MultipartRequest('POST', Uri.parse(url));
+    var request = http.MultipartRequest('POST', Uri.parse(link));
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
 
     try {
@@ -505,8 +372,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         });
         _showSnackbar('Image uploaded successfully :)');
       } else {
-        _showSnackbar(
-            'Failed to upload image. Status code: ${response.statusCode}');
+        _showSnackbar('Failed to upload image. Status code: ${response.statusCode}');
       }
     } catch (e) {
       _showSnackbar('Error uploading image: $e');
@@ -523,7 +389,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Processing'),
+        title: Text('Image and Video Processing'),
       ),
       body: InkWell(
         onTap: _getImageAndUpload,
@@ -536,131 +402,17 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 children: [
                   _image == null
                       ? Text('No image selected',
-                          style: TextStyle(fontSize: 18, color: Colors.grey))
+                      style: TextStyle(fontSize: 18, color: Colors.grey))
                       : Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.8,
-                            maxHeight: MediaQuery.of(context).size.height * 0.4,
-                          ),
-                          child: Image.file(
-                            _image!,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                  SizedBox(height: 20),
-                  Container(
-                    width: 300,
-                    child: Text(
-                      _responseMessage,
-                      style: TextStyle(fontSize: 18, color: Colors.black),
-                      textAlign: TextAlign.center,
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.8,
+                      maxHeight: MediaQuery.of(context).size.height * 0.4,
+                    ),
+                    child: Image.file(
+                      _image!,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-class VideoProcessingPage extends StatefulWidget {
-  @override
-  _VideoProcessingPageState createState() => _VideoProcessingPageState();
-}
-
-class _VideoProcessingPageState extends State<VideoProcessingPage> {
-  VideoPlayerController? _videoPlayerController;
-  String? videoPath;
-  String _responseMessage = '';
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _videoPlayerController?.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickVideo() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        videoPath = pickedFile.path;
-        _videoPlayerController = VideoPlayerController.file(File(videoPath!))
-          ..initialize().then((_) {
-            setState(() {});
-            _videoPlayerController?.play();
-          });
-      });
-
-      await _uploadVideo();
-    }
-  }
-
-  Future<void> _uploadVideo() async {
-    if (videoPath == null) return;
-
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('http://192.168.241.215:5000/process_video'),
-    );
-    request.files.add(await http.MultipartFile.fromPath('video', videoPath!));
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      String responseBody = await response.stream.bytesToString();
-      setState(() {
-        _responseMessage = responseBody;
-        _speak(_responseMessage);
-      });
-      print('Video uploaded successfully');
-    } else {
-      setState(() {
-        _responseMessage = 'Video upload failed';
-      });
-      print('Video upload failed');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Video Processing'),
-      ),
-      body: InkWell(
-        onTap: _pickVideo,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (_videoPlayerController == null ||
-                      !_videoPlayerController!.value.isInitialized)
-                    Text(
-                      'No video selected',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
-                    )
-                  else
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.8,
-                        maxHeight: MediaQuery.of(context).size.height * 0.4,
-                      ),
-                      child: AspectRatio(
-                        aspectRatio: _videoPlayerController!.value.aspectRatio,
-                        child: VideoPlayer(_videoPlayerController!),
-                      ),
-                    ),
                   SizedBox(height: 20),
                   Container(
                     width: 300,

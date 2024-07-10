@@ -11,6 +11,7 @@ import tempfile
 from queue import Queue
 import time
 import numpy as np
+from bson import ObjectId
 from g4f.client import Client
 
 app = Flask(_name_)
@@ -67,14 +68,21 @@ def get_image_caption():
         return jsonify({'error': str(e)}), 500
 
 collection = mongo.db["Assets"]
-
 @app.route('/conversations', methods=['GET'])
 def send_conversations():
     try:
-        data = list(collection.find({}, {'_id': 0}))
+        data = list(collection.find())
+
+        # Convert ObjectId to string
+        for record in data:
+            if '_id' in record:
+                record['_id'] = str(record['_id'])
+
         return jsonify(data)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Error fetching data from database: {str(e)}'}), 500
+
+
 
 def query_video_model(frame):
     retry_attempts = 3
@@ -149,6 +157,32 @@ def process_video_route():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/updateresponse', methods=['POST'])
+def updateresponse():
+    data = request.get_json()
+    id = data.get("id")
+    response = data.get("response")
+
+    try:
+        object_id = ObjectId(id)
+    except Exception as e:
+        return jsonify({"error": "Invalid id format"}), 400
+
+    try:
+        result = mongo.db.conversations.find_one_and_update(
+            {"_id": object_id},  # Use object_id here, not id
+            {'$set': {"response": response}},
+            return_document=True
+        )
+    except Exception as e:
+        return jsonify({"error": "Error searching in database"}), 400
+
+    if result:
+        return jsonify(JSONEncoder().encode(result)), 200
+    else:
+        return jsonify({"error": "Document not found"}), 404
+
 
 if _name_ == '_main_':
     app.run(host='0.0.0.0', port=5000, debug=True)

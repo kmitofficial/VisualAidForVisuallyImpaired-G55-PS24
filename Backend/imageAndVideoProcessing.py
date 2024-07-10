@@ -170,7 +170,7 @@ def updateresponse():
         return jsonify({"error": "Invalid id format"}), 400
 
     try:
-        result = mongo.db.conversations.find_one_and_update(
+        result = collection.find_one_and_update(
             {"_id": object_id},  # Use object_id here, not id
             {'$set': {"response": response}},
             return_document=True

@@ -4,14 +4,20 @@ from flask_cors import CORS
 import requests
 import base64
 from io import BytesIO
+from flask_bcrypt import Bcrypt
+bcrypt = Bcrypt()
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
-app.config["MONGO_URI"] = "mongodb+srv://abhinavsai:dbabhi@cluster0.ld98sx9.mongodb.net/VisualAid"
+app.config["MONGO_URI"] = os.getenv('DB_URL')
 mongo = PyMongo(app)
 
-API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
-HEADERS = {"Authorization": "Bearer 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"}
+API_URL = os.getenv('API_URL')
+HEADERS = os.getenv('API_TOKEN')
 
 
 def query_model(image_data):
@@ -76,47 +82,11 @@ def send_conversations():
         print("Error while fetching data from database")
 
 
+
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
 
-
-
-
-
-# from flask import Flask, request, jsonify
-# import requests
-
-# app = Flask(__name__)
-
-# API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
-# HEADERS = {"Authorization": "Bearer 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"}
-
-# def query_model(image_data):
-#     response = requests.post(API_URL, headers=HEADERS, data=image_data)
-#     return response.json()
-
-# @app.route('/caption', methods=['POST'])
-# def get_image_caption():
-#     try:
-#         # Check if the request contains an image file
-#         if 'image' not in request.files:
-#             return jsonify({'error': 'No image file provided. Make sure to include an image file in the request.'}), 400
-
-#         # Read the image file from the request
-#         image_file = request.files['image']
-#         print("Image : ",image_file)
-
-#         print("Content Type:", image_file.content_type)
-
-#         # Query the model for image caption
-#         result = query_model(image_file)
-#         print(result)
-#         return jsonify(result[0]["generated_text"])
-
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
     

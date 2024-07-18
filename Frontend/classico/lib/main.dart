@@ -44,7 +44,8 @@ class VolunteerScreen extends StatelessWidget {
                 _speak("Entered visual assistance page");
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => VisualAssistancePage()),
+                  MaterialPageRoute(
+                      builder: (context) => VisualAssistancePage()),
                 );
               },
               child: Container(
@@ -52,7 +53,10 @@ class VolunteerScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Do you need visual assistance?',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -71,7 +75,10 @@ class VolunteerScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'I would like to volunteer.',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                   ),
                 ),
               ),
@@ -106,7 +113,10 @@ class VisualAssistancePage extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Image and Video Processor',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -115,25 +125,6 @@ class VisualAssistancePage extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: () {
-<<<<<<< HEAD
-                _speak("Ask your questions by calling jarvis");
-              },
-              child: Container(
-                color: Colors.white70,
-                child: Center(
-                  child: Text(
-                    'Talk with Chat bot',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: InkWell(
-              onTap: () {
-=======
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
                 _speak("now you can call your volunteer");
               },
               child: Container(
@@ -141,14 +132,10 @@ class VisualAssistancePage extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Call My Volunteer',
-<<<<<<< HEAD
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-=======
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
                   ),
                 ),
               ),
@@ -222,7 +209,6 @@ class ImageAndVideoProcessing extends StatelessWidget {
 }
 
 
-
 class VolunteerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -241,24 +227,16 @@ class VolunteerPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-<<<<<<< HEAD
-                    MaterialPageRoute(builder: (context)=> LoadConversations()),
-=======
                     MaterialPageRoute(
                         builder: (context) => LoadConversations()),
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
                   ); // Navigate back to previous screen
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(300,50),
+                  minimumSize: Size(300, 50),
                   backgroundColor: Colors.blue.shade600,
                   foregroundColor: Colors.white,
-<<<<<<< HEAD
-                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-=======
                   textStyle:
                       TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
                 ),
                 child: Text('Images And Caption'),
               ),
@@ -269,10 +247,7 @@ class VolunteerPage extends StatelessWidget {
     );
   }
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
 // -------------------------------
 class LoadConversations extends StatefulWidget {
   @override
@@ -281,24 +256,13 @@ class LoadConversations extends StatefulWidget {
 
 class _LoadConversationsState extends State<LoadConversations> {
   Future<List<dynamic>> fetchConversations() async {
-<<<<<<< HEAD
-    try {
-      final response = await http.get(
-        Uri.parse('http://192.168.143.215:5000/conversations'),
-        headers: {'timeout': '90'},
-      );
-=======
     final response =
         await http.get(Uri.parse('http://192.168.212.229:5000/conversations'));
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception('Failed to load conversations: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to load conversations: $e');
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load conversations');
     }
   }
 
@@ -326,23 +290,6 @@ class _LoadConversationsState extends State<LoadConversations> {
                 final chat = data[index];
                 final caption = chat['caption'];
                 final imageBase64 = chat['image_file'];
-<<<<<<< HEAD
-
-                try {
-                  final imageBytes = base64Decode(imageBase64);
-                  return ListTile(
-                    contentPadding: EdgeInsets.all(8.0),
-                    title: Text(caption ?? 'No Caption'),
-                    subtitle: Image.memory(imageBytes),
-                  );
-                } catch (e) {
-                  print('Error decoding image: $e');
-                  return ListTile(
-                    title: Text(caption ?? 'No Caption'),
-                    subtitle: Text('Error decoding image'),
-                  );
-                }
-=======
                 final imageBytes = base64Decode(imageBase64);
 
                 return ListTile(
@@ -350,7 +297,6 @@ class _LoadConversationsState extends State<LoadConversations> {
                   title: Text(caption ?? 'No Caption'),
                   subtitle: Image.memory(imageBytes),
                 );
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
               },
             );
           }
@@ -362,10 +308,6 @@ class _LoadConversationsState extends State<LoadConversations> {
 
 // -----------------------------------
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
 FlutterTts flutterTts = FlutterTts();
 
 Future<void> _speak(String text) async {
@@ -415,12 +357,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       return;
     }
 
-<<<<<<< HEAD
-    var url = 'http://192.168.143.215:5000/caption'; // Update with your server URL
-=======
     var url =
         'http://192.168.212.229:5000/caption'; // Update with your server URL
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
@@ -470,12 +408,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _image == null
-<<<<<<< HEAD
-                      ? Text('No image selected', style: TextStyle(fontSize: 18, color: Colors.grey))
-=======
                       ? Text('No image selected',
                           style: TextStyle(fontSize: 18, color: Colors.grey))
->>>>>>> 44d98e46c89293780a7a9cecfbb4bc5c33001ea2
                       : Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.8,

@@ -190,12 +190,19 @@ class LoadConversations extends StatefulWidget {
 
 class _LoadConversationsState extends State<LoadConversations> {
   Future<List<dynamic>> fetchConversations() async {
-    final response = await http.get(Uri.parse('http://192.168.45.254:5000/conversations'));
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.143.215:5000/conversations'),
+        headers: {'timeout': '90'},
+      );
 
-    if (response.statusCode == 200) {
-      return  jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load conversations');
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load conversations: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load conversations: $e');
     }
   }
 
@@ -223,13 +230,21 @@ class _LoadConversationsState extends State<LoadConversations> {
                 final chat = data[index];
                 final caption = chat['caption'];
                 final imageBase64 = chat['image_file'];
-                final imageBytes = base64Decode(imageBase64);
 
-                return ListTile(
-                  contentPadding: EdgeInsets.all(8.0),
-                  title: Text(caption ?? 'No Caption'),
-                  subtitle: Image.memory(imageBytes),
-                );
+                try {
+                  final imageBytes = base64Decode(imageBase64);
+                  return ListTile(
+                    contentPadding: EdgeInsets.all(8.0),
+                    title: Text(caption ?? 'No Caption'),
+                    subtitle: Image.memory(imageBytes),
+                  );
+                } catch (e) {
+                  print('Error decoding image: $e');
+                  return ListTile(
+                    title: Text(caption ?? 'No Caption'),
+                    subtitle: Text('Error decoding image'),
+                  );
+                }
               },
             );
           }
@@ -278,7 +293,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       return;
     }
 
-    var url = 'http://192.168.45.254:5000/caption'; // Update with your server URL
+    var url = 'http://192.168.143.215:5000/caption'; // Update with your server URL
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
